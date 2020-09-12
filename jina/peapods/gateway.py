@@ -281,7 +281,21 @@ class RESTGatewayPea(BasePea):
             content['mode'] = ClientMode.from_string(mode)
 
             results = get_result_in_json(getattr(python.request, mode)(**content))
-            return Response(asyncio.run(results),
+            
+            actual_fucking_results = asyncio.run(results)
+            
+            def parse(response):
+                d = json.loads(response)
+                matches = d['search']['docs'][0]['matches']
+                l = []
+                for match in matches:
+                    dic = {'doc_id': base64.b64decode(match['metaInfo']).decode(),
+                         'score': match['score']['value']}
+                    # d['text'] = match['chunks'][0]['text']
+                    l.append(dic)
+                return l
+
+            return Response(json.dumps(parse(actual_fucking_results[0])),
                             status=200,
                             mimetype='application/json')
 
