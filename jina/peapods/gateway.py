@@ -2,6 +2,8 @@ __copyright__ = "Copyright (c) 2020 Jina AI Limited. All rights reserved."
 __license__ = "Apache-2.0"
 
 import asyncio
+import base64
+import json
 import os
 import threading
 import traceback
